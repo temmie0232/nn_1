@@ -9,7 +9,7 @@ from sklearn.model_selection import StratifiedKFold # type: ignore
 
 # 作成したモジュールをインポート
 from dataset import HumanCharacterDataset, load_all_data # load_all_dataもインポート
-from model import SimpleCNN
+from model import HumanCharacterClassifier # type: ignore
 
 # --- ハイパーパラメータ ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -17,6 +17,7 @@ NUM_EPOCHS = 10
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 NUM_FOLDS = 5 # K-Foldの分割数
+MODEL_NAME = "convnext_tiny" # 使用するモデル名を追加 (例: "convnext_tiny", "efficientnet_v2_s")
 
 def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device):
     best_val_loss = float('inf')
@@ -79,6 +80,7 @@ def main():
     print(f"認識対象クラス数: {num_classes}")
     print(f"全データ数: {len(all_image_paths)}")
     print(f"Using device: {DEVICE}")
+    print(f"Using model: {MODEL_NAME}")
 
     # 3. Stratified K-Fold Cross-Validationの準備
     # ラベルをnumpy配列に変換（StratifiedKFoldのため）
@@ -108,7 +110,7 @@ def main():
         print(f"  検証データ数 (Fold {fold+1}): {len(val_dataset)}")
 
         # モデル、損失関数、オプティマイザを定義 (各フォールドで新しいモデルを初期化)
-        model = SimpleCNN(num_classes=num_classes).to(DEVICE)
+        model = HumanCharacterClassifier(num_classes=num_classes, model_name=MODEL_NAME).to(DEVICE)
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 

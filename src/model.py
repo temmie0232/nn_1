@@ -1,36 +1,42 @@
+# src/model.py
+import torch # type: ignore
 import torch.nn as nn # type: ignore
 import torch.nn.functional as F # type: ignore
+import torchvision.models as models # type: ignore
 
-class SimpleCNN(nn.Module):
-    def __init__(self, num_classes=10):
-        super(SimpleCNN, self).__init__()
-        # 224x224x3 の画像を入力とする
-        self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1)
-        self.pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
+class HumanCharacterClassifier(nn.Module):
+    def __init__(self, num_classes=10, model_name="convnext_tiny"):
+        super(HumanCharacterClassifier, self).__init__()
         
-        # プーリング層を2回通過後の画像サイズを計算
-        # 224 -> 112 -> 56
-        # 全結合層への入力サイズ: 32 (チャネル数) * 56 * 56
-        self.fc1 = nn.Linear(32 * 56 * 56, 128)
-        self.fc2 = nn.Linear(128, num_classes)
+        if model_name == "convnext_tiny":
+            self.model = models.convnext_tiny(weights=models.ConvNeXt_Tiny_Weights.IMAGENET1K_V1)
+            # ConvNeXt_Tinyの最終層 (classifier) を変更
+            # ConvNeXt_Tinyのclassifierはnn.Sequentialでfeaturesとlinear_layerを持つ
+            # 最後のnn.Linear層のin_featuresを取得
+            num_ftrs = self.model.classifier[2].in_features
+            self.model.classifier[2] = nn.Linear(num_ftrs, num_classes)
+        elif model_name == "efficientnet_v2_s":
+            self.model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.IMAGENET1K_V1)
+            # EfficientNet_V2_Sの最終層 (classifier) を変更
+            # EfficientNet_V2_Sのclassifierはnn.Sequentialでdropoutとlinear_layerを持つ
+            # 最後のnn.Linear層のin_featuresを取得
+            num_ftrs = self.model.classifier[1].in_features
+            self.model.classifier[1] = nn.Linear(num_ftrs, num_classes)
+        else:
+            raise ValueError(f"Unsupported model_name: {model_name}")
 
     def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        
-        # 全結合層への入力のためにテンソルをフラット化
-        x = x.view(-1, 32 * 56 * 56)
-        
-        x = F.relu(self.fc1(x))
-        x = self.fc2(x)
-        return x
+        return self.model(x)
 
 if __name__ == '__main__':
     # モデルの動作確認
-    import torch # type: ignore
-    model = SimpleCNN(num_classes=10)
-    # ダミーの入力データ (バッチサイズ4, 3チャネル, 224x224)
+    # ConvNeXt_Tinyの確認
+    model_convnext = HumanCharacterClassifier(num_classes=10, model_name="convnext_tiny")
     dummy_input = torch.randn(4, 3, 224, 224)
-    output = model(dummy_input)
-    print("モデルの出力形状:", output.shape) # -> torch.Size([4, 10]) になるはず
+    output_convnext = model_convnext(dummy_input)
+    print("ConvNeXt_Tinyの出力形状:", output_convnext.shape) # -> torch.Size([4, 10]) になるはず
+
+    # EfficientNet_V2_Sの確認
+    model_efficientnet = HumanCharacterClassifier(num_classes=10, model_name="efficientnet_v2_s")
+    output_efficientnet = model_efficientnet(dummy_input)
+    print("EfficientNet_V2_Sの出力形状:", output_efficientnet.shape) # -> torch.Size([4, 10]) になるはず
