@@ -9,7 +9,7 @@ from sklearn.model_selection import StratifiedKFold # type: ignore
 
 # 作成したモジュールをインポート
 from dataset import HumanCharacterDataset, load_all_data # load_all_dataもインポート
-from model import HumanCharacterClassifier # SimpleCNNからHumanCharacterClassifierに変更
+from model import HumanCharacterClassifier # type: ignore
 
 # --- ハイパーパラメータ ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -80,6 +80,7 @@ def main():
     print(f"認識対象クラス数: {num_classes}")
     print(f"全データ数: {len(all_image_paths)}")
     print(f"Using device: {DEVICE}")
+
     print(f"Using model: {MODEL_NAME}") # 使用モデル名を出力
 
     # 3. Stratified K-Fold Cross-Validationの準備
@@ -111,6 +112,7 @@ def main():
 
         # モデル、損失関数、オプティマイザを定義 (各フォールドで新しいモデルを初期化)
         model = HumanCharacterClassifier(num_classes=num_classes, model_name=MODEL_NAME).to(DEVICE) # モデル初期化を更新
+
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
