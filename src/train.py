@@ -17,7 +17,8 @@ NUM_EPOCHS = 10
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 NUM_FOLDS = 5 # K-Foldの分割数
-MODEL_NAME = "convnext_tiny" # 使用するモデル名を追加 (例: "convnext_tiny", "efficientnet_v2_s")
+MODEL_NAME = "efficientnet_v2_s" # 使用するモデル名を追加 
+
 
 def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device):
     best_val_loss = float('inf')
