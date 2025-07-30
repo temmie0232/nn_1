@@ -17,11 +17,14 @@ NUM_EPOCHS = 10
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 NUM_FOLDS = 5 # K-Foldの分割数
-MODEL_NAME = "efficientnet_v2_s" # 使用するモデル名を追加 
-
+MODEL_NAME = "efficientnet_v2_s" # 使用するモデル名を追加 (例: "convnext_tiny", "efficientnet_v2_s")
 
 def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device):
     best_val_loss = float('inf')
+    
+    # Cosine Annealing Schedulerの追加
+    # T_maxはエポック数に設定
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs) 
 
     for epoch in range(num_epochs):
         # 訓練フェーズ
@@ -60,6 +63,9 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
         val_accuracy = 100 * correct_predictions / total_predictions
 
         print(f"Epoch {epoch+1} | Train Loss: {epoch_train_loss:.4f} | Val Loss: {epoch_val_loss:.4f} | Val Accuracy: {val_accuracy:.2f}%")
+        
+        # 学習率スケジューラをステップ
+        scheduler.step()
 
         # 必要に応じて、ここでベストモデルの保存ロジックを追加
         if epoch_val_loss < best_val_loss:
