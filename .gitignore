@@ -1,0 +1,90 @@
+# Python
+################################################################
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+
+# IDE & Editor Files
+################################################################
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+
+# OS Files
+################################################################
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+
+
+# Machine Learning Project Specific
+################################################################
+# Data
+# 大規模なデータセットはGitで管理しない
+dataset/
+
+# Trained models
+# 訓練済みのモデルファイル
+*.pth
+*.pt
+*.onnx
+*.h5
+
+# Logs and outputs
+# 実行ログや実験結果の出力先
+logs/
+runs/
+output/
+results/
+log.txt
+*.log
+
+# Temp files
+*.tmp
+*.temp
