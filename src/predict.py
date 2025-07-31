@@ -57,9 +57,9 @@ if __name__ == '__main__':
         if image_file.lower() == 'q':
             break
         
-        predicted_class_idx, predicted_class_name = predict_image(image_file, model, image_transform, class_names)
+        predicted_class_idx, predicted_class_name = predict_image(image_file, model, image_transform, class_names) # type: ignore
         if predicted_class_idx is not None and predicted_class_name is not None:
-            print(f"予測結果: {predicted_class_idx:02d}({predicted_class_name})")
+            print(f"予測結果: {predicted_class_name}")
         print("\n")
 
     print("予測プログラムを終了します。")
