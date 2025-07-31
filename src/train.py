@@ -13,7 +13,7 @@ from model import HumanCharacterClassifier # SimpleCNNからHumanCharacterClassi
 
 # --- ハイパーパラメータ ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-NUM_EPOCHS = 10
+NUM_EPOCHS = 1
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 NUM_FOLDS = 5 # K-Foldの分割数
@@ -62,16 +62,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
         epoch_val_loss = running_val_loss / len(val_loader)
         val_accuracy = 100 * correct_predictions / total_predictions
 
-        print(f"Epoch {epoch+1} | Train Loss: {epoch_train_loss:.4f} | Val Loss: {epoch_val_loss:.4f} | Val Accuracy: {val_accuracy:.2f}%")
-        
-        # 学習率スケジューラをステップ
-        scheduler.step()
-
-        # 必要に応じて、ここでベストモデルの保存ロジックを追加
-        if epoch_val_loss < best_val_loss:
-            best_val_loss = epoch_val_loss
-            # torch.save(model.state_dict(), 'best_model.pth')
-            # print("Best model saved!")
+        print(f"Epoch {epoch+1}, Loss: {epoch_train_loss}")
 
 def main():
     # 1. データの前処理を定義
@@ -145,6 +136,10 @@ def main():
     print(f"各フォールドの検証精度: {fold_results}")
     print(f"平均検証精度: {np.mean(fold_results):.2f}%")
     print(f"標準偏差: {np.std(fold_results):.2f}%")
+
+    # Save the trained model (last fold's model)
+    torch.save(model.state_dict(), 'model.pth')
+    print("Model saved to model.pth")
 
 if __name__ == '__main__':
     main()
