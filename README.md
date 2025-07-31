@@ -106,3 +106,67 @@ dataset/
 - **クラスごとの画像枚数の偏り**
   - 「ん」クラスが1枚多い程度だが、データ拡張などでバランス調整も検討可能。
 
+---
+
+## 別のコンピューターでのセットアップ、学習、予測方法
+
+### 1. セットアップ方法
+
+別のコンピューターで本プロジェクトをセットアップするには、以下の手順に従ってください。
+
+1.  **リポジトリのクローン**:
+    ```bash
+    git clone https://github.com/your-repo/nn_1.git # リポジトリのURLを適宜変更してください
+    cd nn_1
+    ```
+
+2.  **Python環境の準備**:
+    Python 3.8以上がインストールされていることを確認してください。推奨されるのは仮想環境の利用です。
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate # Linux/macOS
+    # venv\Scripts\activate # Windows
+    ```
+
+3.  **必要なライブラリのインストール**:
+    プロジェクトに必要なすべての依存関係をインストールします。
+    ```bash
+    pip install -r requirements.txt
+    ```
+    また、`src/requirements.txt` にも追加の依存関係がある場合は、そちらもインストールしてください。
+    ```bash
+    pip install -r src/requirements.txt
+    ```
+
+### 2. 学習方法
+
+モデルの学習を実行するには、以下のコマンドを使用します。
+
+1.  **データセットの配置**:
+    `dataset/` ディレクトリがプロジェクトのルートディレクトリに正しく配置されていることを確認してください。
+
+2.  **学習の実行**:
+    ```bash
+    python src/train.py
+    ```
+    学習プロセス中に、モデルのチェックポイントやログが生成される場合があります。詳細は `src/train.py` のコードを参照してください。
+
+### 3. 未知データの予測方法
+
+学習済みモデルを使用して未知の画像データを予測するには、以下の手順に従ってください。
+
+1.  **学習済みモデルの準備**:
+    `src/predict.py` が参照する学習済みモデルのパスを確認し、必要に応じてモデルファイルを配置してください。通常、学習プロセスによって生成されたモデルファイル（例: `model.pth` や `best_model.pt` など）を使用します。
+
+2.  **予測の実行**:
+    予測したい画像ファイルまたは画像が含まれるディレクトリを指定して `predict.py` を実行します。
+    詳細な使用方法は `src/PREDICT_GUIDE.md` を参照してください。
+
+    例:
+    ```bash
+    python src/predict.py --image_path path/to/your_image.jpg
+    # または
+    python src/predict.py --input_dir path/to/your_image_directory
+    ```
+    予測結果は、コンソールに出力されるか、指定された出力ファイルに保存されます。
+
