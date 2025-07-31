@@ -13,14 +13,14 @@ class HumanCharacterClassifier(nn.Module):
             # ConvNeXt_Tinyのclassifierはnn.Sequentialでfeaturesとlinear_layerを持つ
             # 最後のnn.Linear層のin_featuresを取得
             num_ftrs = self.model.classifier[2].in_features
-            self.model.classifier[2] = nn.Linear(num_ftrs, num_classes)
+            self.model.classifier[2] = nn.Linear(num_ftrs, num_classes) # type: ignore
         elif model_name == "efficientnet_v2_s":
             self.model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.IMAGENET1K_V1)
             # EfficientNet_V2_Sの最終層 (classifier) を変更
             # EfficientNet_V2_Sのclassifierはnn.Sequentialでdropoutとlinear_layerを持つ
             # 最後のnn.Linear層のin_featuresを取得
             num_ftrs = self.model.classifier[1].in_features
-            self.model.classifier[1] = nn.Linear(num_ftrs, num_classes)
+            self.model.classifier[1] = nn.Linear(num_ftrs, num_classes) # type: ignore
         else:
             raise ValueError(f"Unsupported model_name: {model_name}")
 

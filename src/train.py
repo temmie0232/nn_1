@@ -13,7 +13,7 @@ from model import HumanCharacterClassifier # SimpleCNNからHumanCharacterClassi
 
 # --- ハイパーパラメータ ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-NUM_EPOCHS = 1
+NUM_EPOCHS = 10
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 NUM_FOLDS = 5 # K-Foldの分割数
